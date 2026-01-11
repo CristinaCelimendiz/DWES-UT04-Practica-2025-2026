@@ -13,21 +13,40 @@
   <p><a href="{% url 'tareas:lista_usuarios' %}">Ir a Listado de usuarios</a></p>
   <p><a href="{% url 'tareas:mis_datos' %}">Mis datos</a></p>
 
+  {% if user.role == "PROFESOR" %}
+    <p>
+      <a href="{% url 'tareas:tareas_pendientes_validacion' %}">
+        Ir a validaciones pendientes ({{ pendientes_validacion }})
+      </a>
+    </p>
+  {% endif %}
 
   <h2>Tareas creadas por mí</h2>
   <ul>
     {% for t in tareas_creadas %}
       <li>
-        {{ t.titulo }}
-        {% if t.completada %}(completada){% endif %}
-        {% if t.validada %}(validada){% endif %}
+        <strong>{{ t.titulo }}</strong>
+        {% if t.validada %}
+          (validada)
+        {% elif t.completada and t.requiere_validacion_profesor %}
+          (completada, pendiente de validación)
+        {% elif t.completada %}
+          (completada)
+        {% else %}
+          (pendiente)
+        {% endif %}
 
-        {% if not t.completada %}
+        {% if t.validada and t.validada_por %}
+          <small> — validada por {{ t.validada_por.username }}</small>
+        {% endif %}
+
+        {% if user.role == "ALUMNO" and not t.completada and not t.validada %}
           <form method="post" action="{% url 'tareas:completar_tarea' t.id %}" style="display:inline;">
             {% csrf_token %}
             <button type="submit">Marcar completada</button>
           </form>
         {% endif %}
+
         {% if t.tareagrupal %}
           <br>
           <small>
@@ -49,16 +68,28 @@
   <ul>
     {% for t in tareas_colaboro %}
       <li>
-        {{ t.titulo }}
-        {% if t.completada %}(completada){% endif %}
-        {% if t.validada %}(validada){% endif %}
+        <strong>{{ t.titulo }}</strong>
+        {% if t.validada %}
+          (validada)
+        {% elif t.completada and t.requiere_validacion_profesor %}
+          (completada, pendiente de validación)
+        {% elif t.completada %}
+          (completada)
+        {% else %}
+          (pendiente)
+        {% endif %}
 
-        {% if not t.completada %}
+        {% if t.validada and t.validada_por %}
+          <small> — validada por {{ t.validada_por.username }}</small>
+        {% endif %}
+
+        {% if user.role == "ALUMNO" and not t.completada and not t.validada %}
           <form method="post" action="{% url 'tareas:completar_tarea' t.id %}" style="display:inline;">
             {% csrf_token %}
             <button type="submit">Marcar completada</button>
           </form>
         {% endif %}
+
         <br>
         <small>
           <strong>Creador:</strong> {{ t.creada_por.username }} |

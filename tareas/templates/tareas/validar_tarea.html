@@ -7,15 +7,75 @@
 <body>
   <h1>Validar tarea</h1>
 
-  <p><strong>{{ tarea.titulo }}</strong></p>
-  <p>Creador: {{ tarea.creada_por.username }}</p>
+  <p><a href="{% url 'tareas:tareas_pendientes_validacion' %}">Volver a pendientes</a></p>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Marcar como validada</button>
-  </form>
+  <hr>
 
-  <p><a href="{% url 'tareas:tareas_pendientes_validacion' %}">Volver</a></p>
+  <h2>{{ tarea.titulo }}</h2>
+
+  {% if tarea.descripcion %}
+    <p><strong>Descripción:</strong> {{ tarea.descripcion }}</p>
+  {% endif %}
+
+  <ul>
+    <li><strong>Creador:</strong> {{ tarea.creada_por.username }}</li>
+
+    {% if tarea.fecha_entrega %}
+      <li><strong>Entrega:</strong> {{ tarea.fecha_entrega }}</li>
+    {% endif %}
+
+    <li><strong>Creada en:</strong> {{ tarea.creada_en }}</li>
+
+    <li>
+      <strong>Requiere validación profesor:</strong>
+      {% if tarea.requiere_validacion_profesor %}Sí{% else %}No{% endif %}
+    </li>
+
+    <li>
+      <strong>Completada:</strong>
+      {% if tarea.completada %}
+        Sí ({{ tarea.completada_en|default:"sin fecha" }})
+      {% else %}
+        No
+      {% endif %}
+    </li>
+
+    <li>
+      <strong>Validada:</strong>
+      {% if tarea.validada %}
+        Sí
+        {% if tarea.validada_por %} — por {{ tarea.validada_por.username }}{% endif %}
+        {% if tarea.validada_en %} — {{ tarea.validada_en }}{% endif %}
+      {% else %}
+        No
+      {% endif %}
+    </li>
+  </ul>
+
+  <hr>
+
+  {% if tarea.validada %}
+    <h3>Ya está validada</h3>
+
+    {% if tarea.comentario_validacion %}
+      <p><strong>Comentario:</strong> {{ tarea.comentario_validacion }}</p>
+    {% else %}
+      <p><em>Sin comentario.</em></p>
+    {% endif %}
+
+    <p><a href="{% url 'tareas:tareas_pendientes_validacion' %}">Volver</a></p>
+
+  {% else %}
+    {% if not tarea.completada %}
+      <p><strong>Ojo:</strong> esta tarea aún no está marcada como completada por el alumno. (Normalmente no deberías validarla todavía.)</p>
+    {% endif %}
+
+    <h3>Validación</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Marcar como validada</button>
+    </form>
+  {% endif %}
 </body>
 </html>
