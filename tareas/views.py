@@ -5,6 +5,11 @@ from django.shortcuts import render
 
 from .models import Tarea, TareaGrupal
 
+from django.contrib import messages
+from django.shortcuts import redirect
+
+from .forms import TareaIndividualForm
+
 User = get_user_model()
 
 
@@ -32,3 +37,18 @@ def mis_tareas(request):
             "tareas_colaboro": tareas_colaboro,
         },
     )
+
+@login_required
+def crear_tarea_individual(request):
+    if request.method == "POST":
+        form = TareaIndividualForm(request.POST)
+        if form.is_valid():
+            tarea = form.save(commit=False)
+            tarea.creada_por = request.user
+            tarea.save()
+            messages.success(request, "Tarea individual creada correctamente.")
+            return redirect("tareas:mis_tareas")
+    else:
+        form = TareaIndividualForm()
+
+    return render(request, "tareas/crear_tarea_individual.html", {"form": form})

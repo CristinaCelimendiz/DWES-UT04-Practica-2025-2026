@@ -6,4 +6,6 @@ app_name = "tareas"
 urlpatterns = [
     path("usuarios/", views.lista_usuarios, name="lista_usuarios"),
     path("mis-tareas/", views.mis_tareas, name="mis_tareas"),
+    path("tareas/nueva/individual/", views.crear_tarea_individual, name="crear_tarea_individual"),
+
 ]
