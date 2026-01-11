@@ -51,5 +51,8 @@ He desarrollado una aplicación en Django para la gestión de tareas cumpliendo 
 - Es un frontend sencillo, usando plantillas HTML enfocadas a:
   - Formularios funcionales.
   - Listados claros.
-  
+
+## Diagrama entidad-relación
+El siguiente diagrama representa el modelo de datos de la aplicación y las relaciones.
+![Diagrama ER](docs/diagrama_er.png)
     
