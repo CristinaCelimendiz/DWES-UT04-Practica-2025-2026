@@ -13,5 +13,6 @@ urlpatterns = [
     path("mis-datos/", views.mis_datos, name="mis_datos"),
     path("usuarios/nuevo/", views.alta_usuario, name="alta_usuario"),
     path("tareas/<int:tarea_id>/completar/", views.completar_tarea, name="completar_tarea"),
+    path("tareas/nueva/evaluable/", views.crear_tarea_evaluable, name="crear_tarea_evaluable"),
 
 ]

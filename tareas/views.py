@@ -9,6 +9,7 @@ from .forms import (
     TareaIndividualForm,
     UsuarioAltaForm,
     ValidarTareaForm,
+    TareaEvaluableForm,
 )
 from .models import Tarea, TareaGrupal, Usuario
 
@@ -182,3 +183,18 @@ def completar_tarea(request, tarea_id):
         return redirect("tareas:mis_tareas")
 
     return render(request, "tareas/confirmar_completar.html", {"tarea": tarea})
+
+@login_required
+def crear_tarea_evaluable(request):
+    if request.method == "POST":
+        form = TareaEvaluableForm(request.POST)
+        if form.is_valid():
+            tarea = form.save(commit=False)
+            tarea.creada_por = request.user
+            tarea.save()
+            messages.success(request, "Tarea evaluable creada correctamente.")
+            return redirect("tareas:mis_tareas")
+    else:
+        form = TareaEvaluableForm()
+
+    return render(request, "tareas/crear_tarea_evaluable.html", {"form": form})
