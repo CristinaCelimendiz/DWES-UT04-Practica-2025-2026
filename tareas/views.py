@@ -110,3 +110,7 @@ def validar_tarea(request, tarea_id):
         form = ValidarTareaForm(instance=tarea)
 
     return render(request, "tareas/validar_tarea.html", {"tarea": tarea, "form": form})
+
+@login_required
+def mis_datos(request):
+    return render(request, "tareas/mis_datos.html", {"u": request.user})

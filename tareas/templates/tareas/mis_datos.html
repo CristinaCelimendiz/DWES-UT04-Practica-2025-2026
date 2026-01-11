@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mis datos</title>
+</head>
+<body>
+  <h1>Mis datos</h1>
+
+  <ul>
+    <li><strong>Usuario:</strong> {{ u.username }}</li>
+    <li><strong>Email:</strong> {{ u.email }}</li>
+    <li><strong>Rol:</strong> {{ u.role }}</li>
+  </ul>
+
+  <p><a href="{% url 'tareas:mis_tareas' %}">Volver a Mis tareas</a></p>
+</body>
+</html>
