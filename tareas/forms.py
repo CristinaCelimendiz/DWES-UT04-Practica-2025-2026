@@ -7,6 +7,10 @@ from .models import TareaIndividual
 from .models import TareaGrupal
 from .models import Tarea
 
+from django.contrib.auth.forms import UserCreationForm
+from .models import Usuario
+
+
 class TareaIndividualForm(forms.ModelForm):
     class Meta:
         model = TareaIndividual
@@ -93,3 +97,8 @@ class ValidarTareaForm(forms.ModelForm):
         widgets = {
             "comentario_validacion": forms.Textarea(attrs={"rows": 3}),
         }        
+
+class UsuarioAltaForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = Usuario
+        fields = ("username", "email", "role")

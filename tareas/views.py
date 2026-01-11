@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from .forms import ValidarTareaForm
 
+from .forms import UsuarioAltaForm
+
 User = get_user_model()
 
 
@@ -114,3 +116,20 @@ def validar_tarea(request, tarea_id):
 @login_required
 def mis_datos(request):
     return render(request, "tareas/mis_datos.html", {"u": request.user})
+
+@login_required
+def alta_usuario(request):
+    
+    if request.user.role != Usuario.Rol.PROFESOR:
+        return redirect("tareas:mis_tareas")
+
+    if request.method == "POST":
+        form = UsuarioAltaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Usuario creado correctamente.")
+            return redirect("tareas:lista_usuarios")
+    else:
+        form = UsuarioAltaForm()
+
+    return render(request, "tareas/alta_usuario.html", {"form": form})
