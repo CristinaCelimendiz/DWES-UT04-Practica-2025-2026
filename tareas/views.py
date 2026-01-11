@@ -10,6 +10,8 @@ from django.shortcuts import redirect
 
 from .forms import TareaIndividualForm
 
+from .forms import TareaGrupalForm
+
 User = get_user_model()
 
 
@@ -52,3 +54,19 @@ def crear_tarea_individual(request):
         form = TareaIndividualForm()
 
     return render(request, "tareas/crear_tarea_individual.html", {"form": form})
+
+@login_required
+def crear_tarea_grupal(request):
+    if request.method == "POST":
+        form = TareaGrupalForm(request.POST, user=request.user)
+        if form.is_valid():
+            tarea = form.save(commit=False)
+            tarea.creada_por = request.user
+            tarea.save()
+            form.save_m2m()
+            messages.success(request, "Tarea grupal creada correctamente.")
+            return redirect("tareas:mis_tareas")
+    else:
+        form = TareaGrupalForm(user=request.user)
+
+    return render(request, "tareas/crear_tarea_grupal.html", {"form": form})

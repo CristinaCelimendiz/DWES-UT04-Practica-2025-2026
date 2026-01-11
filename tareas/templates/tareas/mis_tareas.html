@@ -6,14 +6,31 @@
 </head>
 <body>
   <h1>Mis tareas</h1>
+
   <p><a href="{% url 'tareas:crear_tarea_individual' %}">+ Crear tarea individual</a></p>
+  <p><a href="{% url 'tareas:crear_tarea_grupal' %}">+ Crear tarea grupal</a></p>
 
   <p><a href="{% url 'tareas:lista_usuarios' %}">Ir a Listado de usuarios</a></p>
 
   <h2>Tareas creadas por mí</h2>
   <ul>
     {% for t in tareas_creadas %}
-      <li>{{ t.titulo }} {% if t.completada %}(completada){% endif %}</li>
+      <li>
+        {{ t.titulo }}
+        {% if t.completada %}(completada){% endif %}
+
+        {% if t.tareagrupal %}
+          <br>
+          <small>
+            <strong>Colaboradores:</strong>
+            {% for c in t.tareagrupal.colaboradores.all %}
+              {{ c.username }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+              ninguno
+            {% endfor %}
+          </small>
+        {% endif %}
+      </li>
     {% empty %}
       <li>No has creado tareas.</li>
     {% endfor %}
@@ -22,10 +39,24 @@
   <h2>Tareas grupales donde colaboro</h2>
   <ul>
     {% for t in tareas_colaboro %}
-      <li>{{ t.titulo }} {% if t.completada %}(completada){% endif %}</li>
+      <li>
+        {{ t.titulo }}
+        {% if t.completada %}(completada){% endif %}
+        <br>
+        <small>
+          <strong>Creador:</strong> {{ t.creada_por.username }} |
+          <strong>Colaboradores:</strong>
+          {% for c in t.colaboradores.all %}
+            {{ c.username }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+            ninguno
+          {% endfor %}
+        </small>
+      </li>
     {% empty %}
       <li>No colaboras en tareas grupales.</li>
     {% endfor %}
   </ul>
+
 </body>
 </html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nueva tarea grupal</title>
+</head>
+<body>
+  <h1>Nueva tarea grupal</h1>
+
+  <p>
+    <a href="{% url 'tareas:mis_tareas' %}">Volver a Mis tareas</a>
+  </p>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear</button>
+  </form>
+</body>
+</html>
