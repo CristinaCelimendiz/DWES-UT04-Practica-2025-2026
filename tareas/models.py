@@ -18,6 +18,8 @@ class Usuario(AbstractUser):
 class Tarea(models.Model):
     titulo = models.CharField(max_length=120)
     descripcion = models.TextField(blank=True)
+    comentario_validacion = models.TextField(blank=True)
+
 
     creada_por = models.ForeignKey(
         Usuario, on_delete=models.CASCADE, related_name="tareas_creadas"
@@ -51,16 +53,15 @@ class Tarea(models.Model):
         ordering = ["-creada_en"]
 
     def clean(self):
-        # fecha_entrega > creada_en (o > ahora si no hay creada_en aún)
+        # fecha_entrega > creada_en 
         if self.fecha_entrega:
             ref = self.creada_en or timezone.now()
             if self.fecha_entrega <= ref:
                 raise ValidationError({"fecha_entrega": "La fecha de entrega debe ser posterior a la creación."})
 
-        # Si requiere validación, debería haber profesor_validador (lo permitimos vacío pero lo avisamos)
+        # Si requiere validación, debería haber profesor_validador 
         if self.requiere_validacion_profesor and self.profesor_validador is None:
-            # No lo hacemos crítico para no bloquear guardados al inicio,
-            # pero si quieres hacerlo estricto, conviértelo en ValidationError.
+            # No lo hacemos crítico para no bloquear guardados al inicio.
             pass
 
         # Si hay profesor_validador, debería ser PROFESOR
@@ -82,7 +83,6 @@ class TareaGrupal(Tarea):
 
     def clean(self):
         super().clean()
-        # Si quieres exigir mínimo 1 colaborador, lo haremos en el formulario (mejor que aquí).
 
 
 class TareaEvaluable(Tarea):
@@ -91,5 +91,5 @@ class TareaEvaluable(Tarea):
 
     def clean(self):
         super().clean()
-        # Normalmente evaluable implica validación del profesor
-        # (si quieres forzarlo, también lo hacemos en el formulario)
+
+

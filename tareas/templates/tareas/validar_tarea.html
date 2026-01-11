@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Validar tarea</title>
+</head>
+<body>
+  <h1>Validar tarea</h1>
+
+  <p><strong>{{ tarea.titulo }}</strong></p>
+  <p>Creador: {{ tarea.creada_por.username }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Marcar como validada</button>
+  </form>
+
+  <p><a href="{% url 'tareas:tareas_pendientes_validacion' %}">Volver</a></p>
+</body>
+</html>

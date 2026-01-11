@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
 
-from .models import Tarea, TareaGrupal
+from .models import Tarea, TareaGrupal, Usuario
 
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -11,6 +11,10 @@ from django.shortcuts import redirect
 from .forms import TareaIndividualForm
 
 from .forms import TareaGrupalForm
+
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from .forms import ValidarTareaForm
 
 User = get_user_model()
 
@@ -25,7 +29,7 @@ def lista_usuarios(request):
 def mis_tareas(request):
     user = request.user
 
-    # Tareas creadas por mí (cualquier tipo: base + subclases)
+    # Tareas creadas por mí
     tareas_creadas = Tarea.objects.filter(creada_por=user)
 
     # Tareas grupales donde colaboro
@@ -70,3 +74,39 @@ def crear_tarea_grupal(request):
         form = TareaGrupalForm(user=request.user)
 
     return render(request, "tareas/crear_tarea_grupal.html", {"form": form})
+
+@login_required
+def tareas_pendientes_validacion(request):
+    if request.user.role != Usuario.Rol.PROFESOR:
+        return redirect("tareas:mis_tareas")
+
+    tareas = Tarea.objects.filter(
+        requiere_validacion_profesor=True,
+        profesor_validador=request.user,
+        validada=False,
+    ).order_by("fecha_entrega", "-creada_en")
+
+    return render(request, "tareas/tareas_pendientes_validacion.html", {"tareas": tareas})
+
+
+@login_required
+def validar_tarea(request, tarea_id):
+    tarea = get_object_or_404(Tarea, id=tarea_id)
+
+    # Solo el profesor asignado puede validar
+    if tarea.profesor_validador != request.user:
+        return redirect("tareas:tareas_pendientes_validacion")
+
+    if request.method == "POST":
+        form = ValidarTareaForm(request.POST, instance=tarea)
+        if form.is_valid():
+            tarea = form.save(commit=False)
+            tarea.validada = True
+            tarea.validada_en = timezone.now()
+            tarea.validada_por = request.user
+            tarea.save()
+            return redirect("tareas:tareas_pendientes_validacion")
+    else:
+        form = ValidarTareaForm(instance=tarea)
+
+    return render(request, "tareas/validar_tarea.html", {"tarea": tarea, "form": form})

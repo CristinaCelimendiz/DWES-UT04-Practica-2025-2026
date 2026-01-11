@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Tareas pendientes de validación</title>
+</head>
+<body>
+  <h1>Tareas pendientes de validación</h1>
+
+  <p><a href="{% url 'tareas:mis_tareas' %}">Volver a Mis tareas</a></p>
+
+  <ul>
+    {% for t in tareas %}
+      <li>
+        <strong>{{ t.titulo }}</strong>
+        — creador: {{ t.creada_por.username }}
+        {% if t.fecha_entrega %} — entrega: {{ t.fecha_entrega }}{% endif %}
+        <a href="{% url 'tareas:validar_tarea' t.id %}">Validar</a>
+      </li>
+    {% empty %}
+      <li>No tienes tareas pendientes.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

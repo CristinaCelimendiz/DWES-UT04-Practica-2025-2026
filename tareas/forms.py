@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 
 from .models import TareaIndividual
 from .models import TareaGrupal
+from .models import Tarea
 
 class TareaIndividualForm(forms.ModelForm):
     class Meta:
@@ -49,7 +50,7 @@ class TareaGrupalForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)  # ✅ CLAVE: aceptar "user" sin romper el ModelForm
+        user = kwargs.pop("user", None) 
         super().__init__(*args, **kwargs)
 
         # Solo alumnos como colaboradores
@@ -84,3 +85,11 @@ class TareaGrupalForm(forms.ModelForm):
             )
 
         return cleaned
+    
+class ValidarTareaForm(forms.ModelForm):
+    class Meta:
+        model = Tarea
+        fields = ["comentario_validacion"]
+        widgets = {
+            "comentario_validacion": forms.Textarea(attrs={"rows": 3}),
+        }        
