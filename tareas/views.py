@@ -85,6 +85,7 @@ def tareas_pendientes_validacion(request):
     tareas = Tarea.objects.filter(
         requiere_validacion_profesor=True,
         profesor_validador=request.user,
+         completada=True, 
         validada=False,
     ).order_by("fecha_entrega", "-creada_en")
 
