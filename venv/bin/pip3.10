@@ -1,4 +1,4 @@
-#!/home/isard/Proyectos/gestor_tareas/venv/bin/python3
+#!/home/isard/Proyectos/gestor_tareas/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
