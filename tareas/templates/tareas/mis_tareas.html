@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mis tareas</title>
+</head>
+<body>
+  <h1>Mis tareas</h1>
+
+  <p><a href="{% url 'tareas:lista_usuarios' %}">Ir a Listado de usuarios</a></p>
+
+  <h2>Tareas creadas por mí</h2>
+  <ul>
+    {% for t in tareas_creadas %}
+      <li>{{ t.titulo }} {% if t.completada %}(completada){% endif %}</li>
+    {% empty %}
+      <li>No has creado tareas.</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Tareas grupales donde colaboro</h2>
+  <ul>
+    {% for t in tareas_colaboro %}
+      <li>{{ t.titulo }} {% if t.completada %}(completada){% endif %}</li>
+    {% empty %}
+      <li>No colaboras en tareas grupales.</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>
