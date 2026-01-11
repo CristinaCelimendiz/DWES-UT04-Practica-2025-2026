@@ -20,7 +20,14 @@
       <li>
         {{ t.titulo }}
         {% if t.completada %}(completada){% endif %}
+        {% if t.validada %}(validada){% endif %}
 
+        {% if not t.completada %}
+          <form method="post" action="{% url 'tareas:completar_tarea' t.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Marcar completada</button>
+          </form>
+        {% endif %}
         {% if t.tareagrupal %}
           <br>
           <small>
@@ -44,6 +51,14 @@
       <li>
         {{ t.titulo }}
         {% if t.completada %}(completada){% endif %}
+        {% if t.validada %}(validada){% endif %}
+
+        {% if not t.completada %}
+          <form method="post" action="{% url 'tareas:completar_tarea' t.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Marcar completada</button>
+          </form>
+        {% endif %}
         <br>
         <small>
           <strong>Creador:</strong> {{ t.creada_por.username }} |

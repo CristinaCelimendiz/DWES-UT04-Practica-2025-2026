@@ -12,5 +12,6 @@ urlpatterns = [
     path("profesor/validar/<int:tarea_id>/", views.validar_tarea, name="validar_tarea"),
     path("mis-datos/", views.mis_datos, name="mis_datos"),
     path("usuarios/nuevo/", views.alta_usuario, name="alta_usuario"),
+    path("tareas/<int:tarea_id>/completar/", views.completar_tarea, name="completar_tarea"),
 
 ]

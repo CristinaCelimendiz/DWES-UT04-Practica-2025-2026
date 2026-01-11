@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Completar tarea</title>
+</head>
+<body>
+  <h1>Completar tarea</h1>
+
+  <p>¿Marcar como completada: <strong>{{ tarea.titulo }}</strong>?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, completar</button>
+    <a href="{% url 'tareas:mis_tareas' %}">Cancelar</a>
+  </form>
+</body>
+</html>

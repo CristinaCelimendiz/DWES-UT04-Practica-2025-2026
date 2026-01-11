@@ -133,3 +133,31 @@ def alta_usuario(request):
         form = UsuarioAltaForm()
 
     return render(request, "tareas/alta_usuario.html", {"form": form})
+
+@login_required
+def completar_tarea(request, tarea_id):
+    tarea = get_object_or_404(Tarea, id=tarea_id)
+
+    es_colaborador = False
+    try:
+        es_colaborador = hasattr(tarea, "tareagrupal") and tarea.tareagrupal.colaboradores.filter(id=request.user.id).exists()
+    except Exception:
+        es_colaborador = False
+
+    if tarea.creada_por != request.user and not es_colaborador:
+        return redirect("tareas:mis_tareas")
+
+    if request.method == "POST":
+        tarea.completada = True
+        tarea.completada_en = timezone.now()
+
+        # Si NO requiere profesor, el alumno también "valida" la finalización
+        if not tarea.requiere_validacion_profesor:
+            tarea.validada = True
+            tarea.validada_en = timezone.now()
+            tarea.validada_por = request.user
+
+        tarea.save()
+        return redirect("tareas:mis_tareas")
+
+    return render(request, "tareas/confirmar_completar.html", {"tarea": tarea})
